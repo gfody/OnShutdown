@@ -9,11 +9,12 @@ This is an alternative to these unreliable methods of running code at shutdown:
 - `Register-WmiEvent -Class Win32_ComputerShutdownEvent` can be terminated early, doesn't fire when fastboot is enabled (default in Win10+) and fails on Server Core 1909
 - Task event trigger on event id 1074 (`<Select Path="System">*[System[Provider[@Name='User32'] and EventID=1074]]</Select>`) depends on EventLog and TaskScheduler and doesn't fire reliably (or at all on Server Core 1909)
 
-The code is basically this [reference implementation](https://docs.microsoft.com/en-us/windows/win32/services/the-complete-service-sample) with minor changes.
+The code is basically this [reference service implementation](https://docs.microsoft.com/en-us/windows/win32/services/the-complete-service-sample) with minor changes.
 
 ## How to use
 - Download [OnShutdown](https://github.com/gfody/OnShutdown/releases/download/v1.0/OnShutdown.exe) to some location in your PATH
-- Run `sc create OnShutdown binpath= "OnShutdown 30000 \"powershell -c { ... }\"" start= auto` ([the escaping can be tricky](https://stackoverflow.com/a/11084834/99691))
+- PS> `New-Service OnShutdown -bin 'OnShutdown 30000 "powershell -c { ... }"' -start Automatic`
+- ..or cmd> `sc create OnShutdown binpath= "OnShutdown 30000 \"powershell -c { ... }\"" start= auto` (note: [sc escaping can be tricky](https://stackoverflow.com/a/11084834/99691))
 - The first parameter is the [dwWaitHint](https://docs.microsoft.com/en-us/windows/win32/api/winsvc/ns-winsvc-service_status) in milliseconds
 - The second parameter is the command to pass through to [CreateProcess](https://github.com/gfody/OnShutdown/blob/master/ServiceMain.cpp#L60)
 
