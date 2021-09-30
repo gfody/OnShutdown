@@ -12,9 +12,8 @@ This is an alternative to these unreliable methods of running code at shutdown:
 The code is basically this [reference service implementation](https://docs.microsoft.com/en-us/windows/win32/services/the-complete-service-sample) with minor changes.
 
 ## How to use
-- Download [OnShutdown](https://github.com/gfody/OnShutdown/releases/download/v1.0/OnShutdown.exe) to some location in your PATH
-- PS> `New-Service OnShutdown -bin 'OnShutdown 30000 "powershell -c { ... }"' -start Automatic`
-- ..or cmd> `sc create OnShutdown binpath= "OnShutdown 30000 \"powershell -c { ... }\"" start= auto` (note: [sc escaping can be tricky](https://stackoverflow.com/a/11084834/99691))
+- Download [OnShutdown](https://github.com/gfody/OnShutdown/releases/download/v1.0/OnShutdown.exe) to some location in SCM's PATH (ie `%systemroot%\System32`)
+- PS> `New-Service OnShutdown -bin 'OnShutdown 30000 "powershell -noninteractive -c \"...\""' -start Automatic`
+- ..or cmd> `sc create OnShutdown binpath= "OnShutdown 30000 \"powershell -noninteractive -c \\\"...\\\"\"" start= auto` (note: [sc escaping can be tricky](https://stackoverflow.com/a/11084834))
 - The first parameter is the [dwWaitHint](https://docs.microsoft.com/en-us/windows/win32/api/winsvc/ns-winsvc-service_status) in milliseconds
 - The second parameter is the command to pass through to [CreateProcess](https://github.com/gfody/OnShutdown/blob/master/ServiceMain.cpp#L60)
-
